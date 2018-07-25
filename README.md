@@ -17,8 +17,10 @@ Prepare service:
 ```java
 //Provided from Yaypay team
 String apiUrl = "https://www.developer.yaypay.com/api/v1/";
+
 //Provided from Yaypay team
 String authorizationToken = "qwertyuiop1234568"
+
 ApiService apiService = new ApiService(apiUrl, authorizationToken);
 ```
 
@@ -26,7 +28,6 @@ Methods:
 
 `apiKey` - this key should be request from Yaypay team
 ```java
- 
  Long startTransaction(String apiKey, Date startPeriod, Date endPeriod, String sourceSystemType, boolean transactionIsIrregular) 
  
  void finishTransaction(Long transactionId, String apiKey) 
