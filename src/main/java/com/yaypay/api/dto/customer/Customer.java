@@ -26,9 +26,10 @@ public class Customer {
     private Map<String, Object> customFields;
     private String dunsNumber;
     private String taxId;
+    private String paymentTerms;
 
-    @java.beans.ConstructorProperties({"status", "companyName", "address", "creditLimit", "parentId", "balance", "currency", "customFields", "dunsNumber", "taxId"})
-    Customer(String status, String companyName, Address address, BigDecimal creditLimit, String parentId, BigDecimal balance, String currency, Map<String, Object> customFields, String dunsNumber, String taxId) {
+    @java.beans.ConstructorProperties({"status", "companyName", "address", "creditLimit", "parentId", "balance", "currency", "customFields", "dunsNumber", "taxId", "paymentTerms"})
+    Customer(String status, String companyName, Address address, BigDecimal creditLimit, String parentId, BigDecimal balance, String currency, Map<String, Object> customFields, String dunsNumber, String taxId, String paymentTerms) {
         this.status = status;
         this.companyName = companyName;
         this.address = address;
@@ -39,6 +40,7 @@ public class Customer {
         this.customFields = customFields;
         this.dunsNumber = dunsNumber;
         this.taxId = taxId;
+        this.paymentTerms = paymentTerms;
     }
 
     public static CustomerBuilder builder() {
@@ -85,6 +87,10 @@ public class Customer {
         return this.taxId;
     }
 
+    public String getPaymentTerms() {
+        return paymentTerms;
+    }
+
     public static class CustomerBuilder {
         private String status;
         private String companyName;
@@ -96,6 +102,7 @@ public class Customer {
         private Map<String, Object> customFields;
         private String dunsNumber;
         private String taxId;
+        private String paymentTerms;
 
         CustomerBuilder() {
         }
@@ -150,12 +157,17 @@ public class Customer {
             return this;
         }
 
+        public Customer.CustomerBuilder paymentTerms(String paymentTerms) {
+            this.paymentTerms = paymentTerms;
+            return this;
+        }
+
         public Customer build() {
-            return new Customer(status, companyName, address, creditLimit, parentId, balance, currency, customFields, dunsNumber, taxId);
+            return new Customer(status, companyName, address, creditLimit, parentId, balance, currency, customFields, dunsNumber, taxId, paymentTerms);
         }
 
         public String toString() {
-            return "Customer.CustomerBuilder(status=" + this.status + ", companyName=" + this.companyName + ", address=" + this.address + ", creditLimit=" + this.creditLimit + ", parentId=" + this.parentId + ", balance=" + this.balance + ", currency=" + this.currency + ", customFields=" + this.customFields + ", dunsNumber=" + this.dunsNumber + ", taxId=" + this.taxId + ")";
+            return "Customer.CustomerBuilder(status=" + this.status + ", companyName=" + this.companyName + ", address=" + this.address + ", creditLimit=" + this.creditLimit + ", parentId=" + this.parentId + ", balance=" + this.balance + ", currency=" + this.currency + ", customFields=" + this.customFields + ", dunsNumber=" + this.dunsNumber + ", taxId=" + this.taxId + ", paymentTerms=" + this.paymentTerms + ")";
         }
     }
 }

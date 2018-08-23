@@ -53,7 +53,7 @@ import static org.apache.commons.collections4.ListUtils.partition;
  * Date Created: 7/25/2018 17:49
  */
 
-public final class ApiService {
+public final class ApiService implements IntegrationService {
     private static final Logger log = LoggerFactory.getLogger(ApiService.class);
     private static final int CHUNK_SIZE = 2000;
     private static final String API_KEY_HEADER = "ApiKey";
@@ -77,6 +77,7 @@ public final class ApiService {
         this.httpClient = httpClient;
     }
 
+    @Override
     public Long startTransaction(String apiKey, Date startPeriod, Date endPeriod, String sourceSystemType, boolean transactionIsIrregular) {
         String url = this.apiUrl + "/batch/start?start_period=" +
                 dateToIso8601UtcString(startPeriod) + "&end_period="
@@ -90,10 +91,12 @@ public final class ApiService {
         return id;
     }
 
+    @Override
     public void finishTransaction(Long transactionId, String apiKey) {
         finishTransaction(transactionId, apiKey, false);
     }
 
+    @Override
     public void finishTransaction(Long transactionId, String apiKey, boolean isHistorical) {
         log.info("Start finish transaction with id: {}", transactionId);
         Map<String, String> authenticationHeaders = buildAuthenticationHeaders(apiKey);
@@ -102,12 +105,14 @@ public final class ApiService {
         log.info("End transaction with id: {}", transactionId);
     }
 
+    @Override
     public List<String> getOpenInvoiceIds(Integer bizId, String apiKey) {
         String url = calculateUrlForSync("/invoices/open", bizId);
         String[] invoices = httpClient.get(url, String[].class, buildAuthenticationHeaders(apiKey));
         return Arrays.asList(invoices);
     }
 
+    @Override
     public void createOrUpdateInvoices(Long transactionId, List<InvoiceRequest> invoiceRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<InvoiceRequest>> lists = partition(invoiceRequests, CHUNK_SIZE);
         int i = 0;
@@ -130,6 +135,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateContacts(Long transactionId, List<ContactRequest> contactRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<ContactRequest>> lists = partition(contactRequests, CHUNK_SIZE);
         int i = 0;
@@ -151,6 +157,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateCustomers(Long transactionId, List<CustomerRequest> customerRequests, String apiKey)
             throws InterruptedException, ExecutionException {
         List<List<CustomerRequest>> partition = partition(customerRequests, CHUNK_SIZE);
@@ -173,6 +180,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdatePayments(Long transactionId, List<PaymentRequest> paymentRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<PaymentRequest>> lists = partition(paymentRequests, CHUNK_SIZE);
         int i = 0;
@@ -194,6 +202,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateCreditMemos(Long transactionId, List<CreditMemoRequest> creditMemoRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<CreditMemoRequest>> lists = partition(creditMemoRequests, CHUNK_SIZE);
         int i = 0;
@@ -215,6 +224,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateAdjustment(Long transactionId,
                                          List<AdjustmentRequest> adjustmentRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<AdjustmentRequest>> lists = partition(adjustmentRequests, CHUNK_SIZE);
@@ -237,6 +247,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateExternalCompanies(Long transactionId,
                                                 List<ExternalCompanyRequest> externalCompanyRequests,
                                                 String apiKey) throws InterruptedException, ExecutionException {
@@ -262,6 +273,7 @@ public final class ApiService {
 
     }
 
+    @Override
     public void createOrUpdateExternalContacts(Long transactionId,
                                                List<ExternalContactRequest> externalContactRequests,
                                                String apiKey) throws InterruptedException, ExecutionException {
@@ -286,6 +298,7 @@ public final class ApiService {
     }
 
 
+    @Override
     public void createOrUpdateSales(Long transactionId, List<SalesRequest> salesRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<SalesRequest>> lists = partition(salesRequests, CHUNK_SIZE);
         int i = 0;
@@ -307,6 +320,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateCurrencies(Long transactionId, List<CurrencyRequest> currencyRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<CurrencyRequest>> lists = partition(currencyRequests, CHUNK_SIZE);
         int i = 0;
@@ -328,6 +342,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateContents(Long transactionId, List<ContentRequest> contentRequests, String apiKey) throws InterruptedException, ExecutionException {
         List<List<ContentRequest>> lists = partition(contentRequests, CHUNK_SIZE);
         int i = 0;
@@ -349,6 +364,7 @@ public final class ApiService {
         processAllTasks(tasks);
     }
 
+    @Override
     public void createOrUpdateContent(Long transactionId, ContentRequest contentRequests, String apiKey) {
         EntityListRequest<ContentRequest> customerRequestEntityListRequest = new EntityListRequest<>();
         customerRequestEntityListRequest.setItems(Collections.singletonList(contentRequests));
@@ -361,6 +377,7 @@ public final class ApiService {
     }
 
 
+    @Override
     public Collection<CustomerResponse> getCustomers(Integer bizId, String apiKey, String sourceSystemType, boolean withOpenBalancesOnly) {
         String url = calculateUrlForSync("/" + getUrlPrefx(SyncEntity.CUSTOMERS), bizId)
                 + "&source_system_type=" + sourceSystemType
@@ -369,26 +386,32 @@ public final class ApiService {
         return responses != null ? Arrays.asList(responses) : Collections.emptyList();
     }
 
+    @Override
     public void deleteCustomers(List<DeleteEntity> deletedDtos, Long transactionId, String apiKey) throws ExecutionException, InterruptedException {
         deleteEntity(deletedDtos, transactionId, apiKey, getUrlPrefx(SyncEntity.CUSTOMERS));
     }
 
+    @Override
     public Set<String> deleteInvoices(List<DeleteEntity> deletedDtos, Long transactionId, String apiKey) throws ExecutionException, InterruptedException {
         return deleteEntity(deletedDtos, transactionId, apiKey, getUrlPrefx(SyncEntity.INVOICES));
     }
 
+    @Override
     public Set<String> deletePayments(List<DeleteEntity> deletedDtos, Long transactionId, String apiKey) throws ExecutionException, InterruptedException {
         return deleteEntity(deletedDtos, transactionId, apiKey, getUrlPrefx(SyncEntity.PAYMENTS));
     }
 
+    @Override
     public Set<String> deleteCreditMemos(List<DeleteEntity> deletedDtos, Long transactionId, String apiKey) throws ExecutionException, InterruptedException {
         return deleteEntity(deletedDtos, transactionId, apiKey, getUrlPrefx(SyncEntity.CM));
     }
 
+    @Override
     public Set<String> deleteAdjustments(List<DeleteEntity> deletedDtos, Long transactionId, String apiKey) throws ExecutionException, InterruptedException {
         return deleteEntity(deletedDtos, transactionId, apiKey, getUrlPrefx(SyncEntity.ADJUSTMENTS));
     }
 
+    @Override
     public Set<String> deleteContacts(List<DeleteEntity> deletedDtos, Long transactionId, String apiKey) throws ExecutionException, InterruptedException {
         return deleteEntity(deletedDtos, transactionId, apiKey, getUrlPrefx(SyncEntity.CONTACTS));
     }
@@ -422,10 +445,12 @@ public final class ApiService {
         return result;
     }
 
+    @Override
     public Set<String> deleteEntity(SyncEntity syncEntityType, List<DeleteEntity> deleteEntities, Long transactionId, String apiKey) throws ExecutionException, InterruptedException {
         return deleteEntity(deleteEntities, transactionId, apiKey, getUrlPrefx(syncEntityType));
     }
 
+    @Override
     public List<String> getActiveEntityIds(SyncEntity syncEntityType, Integer bizId, String apiKey, String sourceSystemType) {
         String url = calculateUrlForSync("/" + getUrlPrefx(syncEntityType) + "/active", bizId);
         url = url + "&sourceSystemType=" + sourceSystemType;
