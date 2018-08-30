@@ -111,6 +111,12 @@ public final class ApiService implements IntegrationService {
         String[] invoices = httpClient.get(url, String[].class, buildAuthenticationHeaders(apiKey));
         return Arrays.asList(invoices);
     }
+    
+    public List<String> getOpenInvoiceWithoutContentIds(Integer bizId, String apiKey) {
+        String url = calculateUrlForSync("/invoices/open_without_content", bizId);
+        String[] invoices = httpClient.get(url, String[].class, buildAuthenticationHeaders(apiKey));
+        return Arrays.asList(invoices);
+    }
 
     @Override
     public void createOrUpdateInvoices(Long transactionId, List<InvoiceRequest> invoiceRequests, String apiKey) throws InterruptedException, ExecutionException {
