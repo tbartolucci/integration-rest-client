@@ -22,17 +22,21 @@ public class InvoiceItem {
     private BigDecimal quantity;
     private BigDecimal rate;
     private BigDecimal amount;
+    private String employeeName;
+    private String employeeId;
     private Map<String, Object> customFields;
     private Integration integration;
 
-    @java.beans.ConstructorProperties({"name", "type", "description", "quantity", "rate", "amount", "customFields", "integration"})
-    InvoiceItem(String name, String type, String description, BigDecimal quantity, BigDecimal rate, BigDecimal amount, Map<String, Object> customFields, Integration integration) {
+    @java.beans.ConstructorProperties({"name", "type", "description", "quantity", "rate", "amount", "employeeName", "employeeId", "customFields", "integration"})
+    public InvoiceItem(String name, String type, String description, BigDecimal quantity, BigDecimal rate, BigDecimal amount, String employeeName, String employeeId, Map<String, Object> customFields, Integration integration) {
         this.name = name;
         this.type = type;
         this.description = description;
         this.quantity = quantity;
         this.rate = rate;
         this.amount = amount;
+        this.employeeName = employeeName;
+        this.employeeId = employeeId;
         this.customFields = customFields;
         this.integration = integration;
     }
@@ -63,6 +67,14 @@ public class InvoiceItem {
 
     public BigDecimal getAmount() {
         return this.amount;
+    }
+
+    public String getEmployeeName() {
+        return this.employeeName;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
     }
 
     public Map<String, Object> getCustomFields() {
@@ -103,6 +115,17 @@ public class InvoiceItem {
         return this;
     }
 
+    public InvoiceItem setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        return this;
+    }
+
+    public InvoiceItem setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+        return this;
+    }
+
+
     public InvoiceItem setCustomFields(Map<String, Object> customFields) {
         this.customFields = customFields;
         return this;
@@ -120,6 +143,8 @@ public class InvoiceItem {
         private BigDecimal quantity;
         private BigDecimal rate;
         private BigDecimal amount;
+        private String employeeName;
+        private String employeeId;
         private Map<String, Object> customFields;
         private Integration integration;
 
@@ -156,6 +181,16 @@ public class InvoiceItem {
             return this;
         }
 
+        public InvoiceItem.InvoiceItemBuilder employeeName(String employeeName) {
+            this.employeeName = employeeName;
+            return this;
+        }
+
+        public InvoiceItem.InvoiceItemBuilder employeeId(String employeeId) {
+            this.employeeId = employeeId;
+            return this;
+        }
+
         public InvoiceItem.InvoiceItemBuilder customFields(Map<String, Object> customFields) {
             this.customFields = customFields;
             return this;
@@ -167,11 +202,11 @@ public class InvoiceItem {
         }
 
         public InvoiceItem build() {
-            return new InvoiceItem(name, type, description, quantity, rate, amount, customFields, integration);
+            return new InvoiceItem(name, type, description, quantity, rate, amount, employeeName, employeeId, customFields, integration);
         }
 
         public String toString() {
-            return "InvoiceItem.InvoiceItemBuilder(name=" + this.name + ", type=" + this.type + ", description=" + this.description + ", quantity=" + this.quantity + ", rate=" + this.rate + ", amount=" + this.amount + ", customFields=" + this.customFields + ", integration=" + this.integration + ")";
+            return "InvoiceItem.InvoiceItemBuilder(name=" + this.name + ", type=" + this.type + ", description=" + this.description + ", quantity=" + this.quantity + ", rate=" + this.rate + ", amount=" + this.amount + ", employeeName=" + this.employeeName +  ", employeeId=" + this.employeeId + ", customFields=" + this.customFields + ", integration=" + this.integration + ")";
         }
     }
 }
